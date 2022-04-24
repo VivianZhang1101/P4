@@ -85,10 +85,9 @@ found:
     p->state = EMBRYO;
     p->pid = nextpid++;
     for(int i =0;i<CLOCKSIZE;i++){
-        p->clock_queue[i].virtual_addr = -1;
+        p->clock_queue[i] = -1;
     }
     p->clock_hand_idx = 0;
-    p->current_queue_num = 0;
     release(&ptable.lock);
 
     // Allocate kernel stack.
@@ -166,12 +165,9 @@ int growproc(int n) {
     } else if (n < 0) {
         if ((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
             return -1;
-        uint page = PGROUNDDOWN(old_sz - 1);
-        // Delete all pages
-        while(page >= sz)
+        for (int i = 0; i < (-n / PGSIZE); i++)
         {
-            rm_clock(page);
-            page -= PGSIZE;
+            rm_clock((sz - i * PGSIZE));
         }
     }
     curproc->sz = sz;
@@ -205,18 +201,21 @@ int fork(void) {
 
     // Clear %eax so that fork returns 0 in the child.
     np->tf->eax = 0;
+    for (int i = 0; i < CLOCKSIZE; i++) 
+    {
+        np->clock_queue[i] = curproc->clock_queue[i];
+    }
+    np->clock_hand_idx = curproc->clock_hand_idx;
+
     for (i = 0; i < NOFILE; i++)
         if (curproc->ofile[i])
             np->ofile[i] = filedup(curproc->ofile[i]);
+
     np->cwd = idup(curproc->cwd);
 
     safestrcpy(np->name, curproc->name, sizeof(curproc->name));
 
     pid = np->pid;
-    for (int i = 0; i < CLOCKSIZE; i++) {
-        np->clock_queue[i].virtual_addr = curproc->clock_queue[i].virtual_addr;
-        np->clock_queue[i].pte = curproc->clock_queue[i].pte;
-    }
 
     acquire(&ptable.lock);
 
