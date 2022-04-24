@@ -34,6 +34,10 @@ struct context {
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
+typedef struct node_t{
+    uint virtual_addr;
+    pte_t *pte;
+} node;
 // Per-process state
 struct proc {
   uint sz;                     // Size of process memory (bytes)
@@ -49,6 +53,11 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  // clock queue
+  node clock_queue[CLOCKSIZE];
+  int clock_hand_idx;
+  int current_queue_num;
+  //unit clock_queue[CLOCKSIZE];
 };
 
 // Process memory is laid out contiguously, low addresses first:

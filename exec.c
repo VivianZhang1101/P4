@@ -100,9 +100,25 @@ exec(char *path, char **argv)
   curproc->tf->eip = elf.entry;  // main
   curproc->tf->esp = sp;
   switchuvm(curproc);
+  // if(sz-2*PGSIZE<0)
+  // {
+  //   mencrypt(0,1);
+  // }
+  // else
+  // {
+  //   mencrypt(0, (sz/PGSIZE-2));
+  //   mencrypt((char *)(sz-PGSIZE),1);
+  // }
+  // for(int i=0;i<PGSIZE;i++)
+  // {
+  //   mencrypt((char *)(0+i*PGSIZE),1);
+  // }
+  mencrypt(0, sz/PGSIZE);
   freevm(oldpgdir);
+  // encrypting memory
+  // entrypt the process memory
   return 0;
-
+  
  bad:
   if(pgdir)
     freevm(pgdir);

@@ -190,9 +190,12 @@ int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
 //p4Debug : Added new syscalls
 int             mencrypt(char *virtual_addr, int len);
-int             getpgtable(struct pt_entry* entries, int num);
+int             getpgtable(struct pt_entry* entries, int num, int wsetOnly);
 int             dump_rawphymem(char *physical_addr, char * buffer);
 int             mdecrypt(char *virtual_addr);
+void            rm_clock(uint virtual_addr);
+
+
 
 
 // number of elements in fixed-size array

@@ -100,12 +100,12 @@ struct segdesc {
 #define PTE_P           0x001   // Present
 #define PTE_W           0x002   // Writeable
 #define PTE_U           0x004   // User
-#define PTE_A           0x020
+#define PTE_A           0x020   // access?
 #define PTE_PS          0x080   // Page Size
 //p4Debug: Added PTE_E flag for encrypted pages.
 //You have 12 bits for flags according
 //to page 30 of the textbook
-#define PTE_E           0x400
+#define PTE_E           0x200  // the 8th bit
 
 // Address in page table or page directory entry
 #define PTE_ADDR(pte)   ((uint)(pte) & ~0xFFF)
